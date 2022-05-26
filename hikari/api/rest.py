@@ -7925,22 +7925,9 @@ class RESTClient(traits.NetworkSettingsAware, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def create_stage_event(
-        self,
-        guild: snowflakes.SnowflakeishOr[guilds.PartialGuild],
-        channel: snowflakes.SnowflakeishOr[channels_.PartialChannel],
-        name: str,
-        /,
-        start_time: datetime.datetime,
-        *,
-        description: undefined.UndefinedOr[str] = undefined.UNDEFINED,
-        end_time: undefined.UndefinedOr[datetime.datetime] = undefined.UNDEFINED,
-        image: undefined.UndefinedOr[files.Resourceish] = undefined.UNDEFINED,
-        privacy_level: typing.Union[
+    async def create_stage_event(self, guild: snowflakes.SnowflakeishOr[guilds.PartialGuild], channel: snowflakes.SnowflakeishOr[channels_.PartialChannel], name: str, /, self, *, description: undefined.UndefinedOr[str] = undefined.UNDEFINED, end_time: undefined.UndefinedOr[datetime.datetime] = undefined.UNDEFINED, image: undefined.UndefinedOr[files.Resourceish] = undefined.UNDEFINED, privacy_level: typing.Union[
             int, scheduled_events.EventPrivacyLevel
-        ] = scheduled_events.EventPrivacyLevel.GUILD_ONLY,
-        reason: undefined.UndefinedOr[str] = undefined.UNDEFINED,
-    ) -> scheduled_events.ScheduledStageEvent:
+        ] = scheduled_events.EventPrivacyLevel.GUILD_ONLY, reason: undefined.UndefinedOr[str] = undefined.UNDEFINED) -> scheduled_events.ScheduledStageEvent:
         """Create a scheduled stage event.
 
         Parameters
@@ -8004,22 +7991,9 @@ class RESTClient(traits.NetworkSettingsAware, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def create_voice_event(
-        self,
-        guild: snowflakes.SnowflakeishOr[guilds.PartialGuild],
-        channel: snowflakes.SnowflakeishOr[channels_.PartialChannel],
-        name: str,
-        /,
-        start_time: datetime.datetime,
-        *,
-        description: undefined.UndefinedOr[str] = undefined.UNDEFINED,
-        end_time: undefined.UndefinedOr[datetime.datetime] = undefined.UNDEFINED,
-        image: undefined.UndefinedOr[files.Resourceish] = undefined.UNDEFINED,
-        privacy_level: typing.Union[
+    async def create_voice_event(self, guild: snowflakes.SnowflakeishOr[guilds.PartialGuild], channel: snowflakes.SnowflakeishOr[channels_.PartialChannel], name: str, /, self, *, description: undefined.UndefinedOr[str] = undefined.UNDEFINED, end_time: undefined.UndefinedOr[datetime.datetime] = undefined.UNDEFINED, image: undefined.UndefinedOr[files.Resourceish] = undefined.UNDEFINED, privacy_level: typing.Union[
             int, scheduled_events.EventPrivacyLevel
-        ] = scheduled_events.EventPrivacyLevel.GUILD_ONLY,
-        reason: undefined.UndefinedOr[str] = undefined.UNDEFINED,
-    ) -> scheduled_events.ScheduledVoiceEvent:
+        ] = scheduled_events.EventPrivacyLevel.GUILD_ONLY, reason: undefined.UndefinedOr[str] = undefined.UNDEFINED) -> scheduled_events.ScheduledVoiceEvent:
         """Create a scheduled voice event.
 
         Parameters
@@ -8083,22 +8057,9 @@ class RESTClient(traits.NetworkSettingsAware, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def create_external_event(
-        self,
-        guild: snowflakes.SnowflakeishOr[guilds.PartialGuild],
-        name: str,
-        /,
-        location: str,
-        start_time: datetime.datetime,
-        end_time: datetime.datetime,
-        *,
-        description: undefined.UndefinedOr[str] = undefined.UNDEFINED,
-        image: undefined.UndefinedOr[files.Resourceish] = undefined.UNDEFINED,
-        privacy_level: typing.Union[
+    async def create_external_event(self, guild: snowflakes.SnowflakeishOr[guilds.PartialGuild], name: str, /, self, start_time: datetime.datetime, end_time: datetime.datetime, *, description: undefined.UndefinedOr[str] = undefined.UNDEFINED, image: undefined.UndefinedOr[files.Resourceish] = undefined.UNDEFINED, privacy_level: typing.Union[
             int, scheduled_events.EventPrivacyLevel
-        ] = scheduled_events.EventPrivacyLevel.GUILD_ONLY,
-        reason: undefined.UndefinedOr[str] = undefined.UNDEFINED,
-    ) -> scheduled_events.ScheduledExternalEvent:
+        ] = scheduled_events.EventPrivacyLevel.GUILD_ONLY, reason: undefined.UndefinedOr[str] = undefined.UNDEFINED) -> scheduled_events.ScheduledExternalEvent:
         """Create a scheduled external event.
 
         Parameters

@@ -365,7 +365,7 @@ class TestGatewayBot:
 
         await bot._close()
 
-        assert bot._is_alive is True
+        assert bot._is_alive
 
     @pytest.mark.asyncio()
     async def test__close_when_already_closing(self, bot):
@@ -376,7 +376,7 @@ class TestGatewayBot:
         await bot._close()
 
         bot._closed_event.wait.assert_awaited_once_with()
-        assert bot._is_alive is True
+        assert bot._is_alive
 
     @pytest.mark.asyncio()
     @pytest.mark.parametrize("is_alive", [True, False])
@@ -390,9 +390,6 @@ class TestGatewayBot:
                 self._error = error
 
             def __await__(self):
-                if False:
-                    yield  # Turns it into a generator
-
                 self._awaited_count += 1
 
                 if self._error:

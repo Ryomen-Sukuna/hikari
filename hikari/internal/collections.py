@@ -306,7 +306,7 @@ class SnowflakeSet(typing.MutableSet[snowflakes.Snowflake]):
         return len(self._ids)
 
     def __repr__(self) -> str:
-        return type(self).__name__ + "(" + ", ".join(map(repr, self._ids)) + ")"
+        return f"{type(self).__name__}(" + ", ".join(map(repr, self._ids)) + ")"
 
     def __sizeof__(self) -> int:
         return super().__sizeof__() + sys.getsizeof(self._ids)

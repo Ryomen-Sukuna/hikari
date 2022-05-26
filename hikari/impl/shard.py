@@ -157,7 +157,10 @@ class _GatewayTransport(aiohttp.ClientWebSocketResponse):
             return
 
         self.sent_close = True
-        self.logger.debug("sending close frame with code %s and message %s", int(code), message)
+        self.logger.debug(
+            "sending close frame with code %s and message %s", code, message
+        )
+
         try:
             await asyncio.wait_for(super().close(code=code, message=message), timeout=5)
         except asyncio.TimeoutError:
@@ -196,7 +199,7 @@ class _GatewayTransport(aiohttp.ClientWebSocketResponse):
             can_reconnect = close_code < 4000 or close_code in _RECONNECTABLE_CLOSE_CODES
             raise errors.GatewayServerClosedConnectionError(reason, close_code, can_reconnect)
 
-        if message.type == aiohttp.WSMsgType.CLOSING or message.type == aiohttp.WSMsgType.CLOSED:
+        if message.type in [aiohttp.WSMsgType.CLOSING, aiohttp.WSMsgType.CLOSED]:
             # May be caused by the server shutting us down.
             # May be caused by Windows injecting an EOF if something disconnects, as some
             # network drivers appear to do this.
@@ -463,7 +466,7 @@ class GatewayShardImpl(shard.GatewayShard):
         if data_format != shard.GatewayDataFormat.JSON:
             raise NotImplementedError(f"Unsupported gateway data format: {data_format}")
 
-        query = {"v": _VERSION, "encoding": str(data_format)}
+        query = {"v": _VERSION, "encoding": data_format}
 
         if compression is not None:
             if compression == shard.GatewayCompression.TRANSPORT_ZLIB_STREAM:
@@ -825,14 +828,10 @@ class GatewayShardImpl(shard.GatewayShard):
                     backoff_time = next(backoff)
                     self._logger.info("backing off reconnecting for %.2fs", backoff_time)
 
-                    try:
+                    with contextlib.suppress(asyncio.TimeoutError):
                         await asyncio.wait_for(self._closing_event.wait(), timeout=backoff_time)
                         # We were told to close.
                         return
-                    except asyncio.TimeoutError:
-                        # We are going to run once.
-                        pass
-
                 try:
                     last_started_at = time.monotonic()
                     should_restart = await self._run_once()
@@ -919,15 +918,11 @@ class GatewayShardImpl(shard.GatewayShard):
 
                 # Event polling.
                 while not self._closing_event.is_set() and not heartbeat_task.done() and not heartbeat_task.cancelled():
-                    try:
+                    with contextlib.suppress(asyncio.TimeoutError):
                         result = await self._poll_events()
 
                         if result is not None:
                             return result
-                    except asyncio.TimeoutError:
-                        # We should check if the shard is still alive and then poll again after.
-                        pass
-
                 # If the heartbeat died due to an error, it should be raised here.
                 # This will currently allow us to try to resume if that happens
                 # We return True if zombied.
@@ -1028,10 +1023,7 @@ class GatewayShardImpl(shard.GatewayShard):
 
     @staticmethod
     def _serialize_datetime(dt: typing.Optional[datetime.datetime]) -> typing.Optional[int]:
-        if dt is None:
-            return None
-
-        return int(dt.timestamp() * 1_000)
+        return None if dt is None else int(dt.timestamp() * 1_000)
 
     async def _wait_for_hello(self) -> asyncio.Task[bool]:
         # Expect HELLO.
@@ -1060,5 +1052,4 @@ class GatewayShardImpl(shard.GatewayShard):
             raise asyncio.CancelledError("closing flag was set before we could handshake")
 
         heartbeat_interval = float(payload[_D]["heartbeat_interval"]) / 1_000.0
-        heartbeat_task = asyncio.create_task(self._heartbeat(heartbeat_interval))
-        return heartbeat_task
+        return asyncio.create_task(self._heartbeat(heartbeat_interval))

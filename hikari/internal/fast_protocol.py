@@ -91,14 +91,11 @@ class _FastProtocolChecking(type(typing.Protocol)):
         return cls
 
     def __instancecheck__(self: _T, other: typing.Any) -> bool:
-        if not self._is_protocol:
-            return super().__instancecheck__(other)
-
-        for i in self._attributes_:
-            if not hasattr(other, i):
-                return False
-
-        return True
+        return (
+            all(hasattr(other, i) for i in self._attributes_)
+            if self._is_protocol
+            else super().__instancecheck__(other)
+        )
 
 
 @typing.runtime_checkable
@@ -126,10 +123,9 @@ class FastProtocolChecking(typing.Protocol, metaclass=_FastProtocolChecking):
             return
 
         def _subclass_hook(other: typing.Type[typing.Any]) -> bool:
-            for i in cls._attributes_:
-                if i not in other.__dict__:
-                    return NotImplemented
-
-            return True
+            return next(
+                (NotImplemented for i in cls._attributes_ if i not in other.__dict__),
+                True,
+            )
 
         cls.__subclasshook__ = _subclass_hook
