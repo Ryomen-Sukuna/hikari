@@ -186,10 +186,8 @@ class TestEventStream:
         streamer = event_manager_base.EventStream(mock.Mock(), event_type=base_events.Event, timeout=None)
 
         async def quickly_run_task(task):
-            try:
+            with contextlib.suppress(asyncio.TimeoutError):
                 await asyncio.wait_for(asyncio.shield(task), timeout=0.01)
-            except asyncio.TimeoutError:
-                pass
 
         with streamer:
             next_task = asyncio.create_task(streamer.next())
@@ -360,7 +358,7 @@ class TestEventStream:
             event_manager_base._generate_weak_listener.assert_not_called()
 
         mock_manager.subscribe.assert_not_called()
-        assert stream._active is True
+        assert stream._active
         assert stream._registered_listener is mock_listener
 
         # Ensure we don't get a warning or error on del
@@ -383,7 +381,7 @@ class TestEventStream:
             event_manager_base._generate_weak_listener.assert_called_once_with(mock_listener_ref)
 
         mock_manager.subscribe.assert_called_once_with(base_events.Event, mock_listener)
-        assert stream._active is True
+        assert stream._active
         assert stream._registered_listener is mock_listener
 
         # Ensure we don't get a warning or error on del

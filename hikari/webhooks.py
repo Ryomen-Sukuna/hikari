@@ -691,12 +691,9 @@ class IncomingWebhook(PartialWebhook, ExecutableWebhook):
             `builtins.None`.
         """
         token: undefined.UndefinedOr[str] = undefined.UNDEFINED
-        if use_token:
-            if self.token is None:
-                raise ValueError("This webhook's token is unknown, so cannot be used")
-            token = self.token
-
-        elif use_token is undefined.UNDEFINED and self.token:
+        if use_token and self.token is None:
+            raise ValueError("This webhook's token is unknown, so cannot be used")
+        elif use_token or use_token is undefined.UNDEFINED and self.token:
             token = self.token
 
         await self.app.rest.delete_webhook(self.id, token=token)
@@ -766,12 +763,9 @@ class IncomingWebhook(PartialWebhook, ExecutableWebhook):
             If an internal error occurs on Discord while handling the request.
         """  # noqa: E501 - Line too long
         token: undefined.UndefinedOr[str] = undefined.UNDEFINED
-        if use_token:
-            if self.token is None:
-                raise ValueError("This webhook's token is unknown, so cannot be used")
-            token = self.token
-
-        elif use_token is undefined.UNDEFINED and self.token:
+        if use_token and self.token is None:
+            raise ValueError("This webhook's token is unknown, so cannot be used")
+        elif use_token or use_token is undefined.UNDEFINED and self.token:
             token = self.token
 
         webhook = await self.app.rest.edit_webhook(
@@ -862,12 +856,9 @@ class IncomingWebhook(PartialWebhook, ExecutableWebhook):
             If an internal error occurs on Discord while handling the request.
         """
         token: undefined.UndefinedOr[str] = undefined.UNDEFINED
-        if use_token:
-            if self.token is None:
-                raise ValueError("This webhook's token is unknown, so cannot be used")
-            token = self.token
-
-        elif use_token is undefined.UNDEFINED and self.token:
+        if use_token and self.token is None:
+            raise ValueError("This webhook's token is unknown, so cannot be used")
+        elif use_token or use_token is undefined.UNDEFINED and self.token:
             token = self.token
 
         webhook = await self.app.rest.fetch_webhook(self.id, token=token)

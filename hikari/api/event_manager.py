@@ -422,13 +422,7 @@ class EventManager(abc.ABC):
         """
 
     @abc.abstractmethod
-    def stream(
-        self,
-        event_type: typing.Type[base_events.EventT],
-        /,
-        timeout: typing.Union[float, int, None],
-        limit: typing.Optional[int] = None,
-    ) -> EventStream[base_events.EventT]:
+    def stream(self, event_type: typing.Type[base_events.EventT], /, self, limit: typing.Optional[int] = None) -> EventStream[base_events.EventT]:
         """Return a stream iterator for the given event and sub-events.
 
         Parameters
@@ -488,13 +482,7 @@ class EventManager(abc.ABC):
         """
 
     @abc.abstractmethod
-    async def wait_for(
-        self,
-        event_type: typing.Type[base_events.EventT],
-        /,
-        timeout: typing.Union[float, int, None],
-        predicate: typing.Optional[PredicateT[base_events.EventT]] = None,
-    ) -> base_events.EventT:
+    async def wait_for(self, event_type: typing.Type[base_events.EventT], /, self, predicate: typing.Optional[PredicateT[base_events.EventT]] = None) -> base_events.EventT:
         """Wait for a given event to occur once, then return the event.
 
         Parameters

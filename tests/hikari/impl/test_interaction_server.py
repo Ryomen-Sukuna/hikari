@@ -520,7 +520,7 @@ class TestInteractionServer:
         mock_runner.shutdown.assert_awaited_once()
         mock_runner.cleanup.assert_awaited_once()
         mock_event.set.assert_called_once()
-        assert mock_interaction_server._is_closing is True
+        assert mock_interaction_server._is_closing
 
     @pytest.mark.asyncio()
     async def test_close_when_closing(self, mock_interaction_server: interaction_server_impl.InteractionServer):
@@ -872,7 +872,7 @@ class TestInteractionServer:
             aiohttp.web.UnixSite.return_value.start.assert_awaited_once()
             aiohttp.web.SockSite.return_value.start.assert_awaited_once()
             assert mock_interaction_server._close_event is asyncio.Event.return_value
-            assert mock_interaction_server._is_closing is False
+            assert not mock_interaction_server._is_closing
 
     @pytest.mark.asyncio()
     async def test_start_with_default_behaviour(

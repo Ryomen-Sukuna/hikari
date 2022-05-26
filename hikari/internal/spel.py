@@ -80,10 +80,9 @@ class AttrGetter(typing.Generic[InputValueT, ReturnValueT]):
         elif attr_name.startswith("."):
             attr_name = attr_name[1:]
 
-        self.pipeline: typing.List[typing.Callable[[typing.Any], typing.Any]] = []
-
-        for operation in attr_name.split("."):
-            self.pipeline.append(self._transform(operation))
+        self.pipeline: typing.List[typing.Callable[[typing.Any], typing.Any]] = [
+            self._transform(operation) for operation in attr_name.split(".")
+        ]
 
     def _transform(self, attr_name: str) -> typing.Callable[[typing.Any], typing.Any]:
         if attr_name.startswith("!"):

@@ -39,8 +39,6 @@ class RequestContextStub:
         pass
 
     def __await__(self) -> aiohttp.ClientResponse:
-        if False:
-            yield  # Turns this into a generator.
         self.await_count += 1
         return self.response_getter()
 

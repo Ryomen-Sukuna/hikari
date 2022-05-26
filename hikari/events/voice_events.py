@@ -159,7 +159,4 @@ class VoiceServerUpdateEvent(VoiceEvent):
         typing.Optional[builtins.str]
             If not `builtins.None`, the URI to use to connect to the voice gateway.
         """
-        if self.raw_endpoint is None:
-            return None
-
-        return f"wss://{self.raw_endpoint}"
+        return None if self.raw_endpoint is None else f"wss://{self.raw_endpoint}"

@@ -155,7 +155,7 @@ class AttrComparator(typing.Generic[ValueT]):
 
     def __call__(self, item: ValueT) -> bool:
         real_item = self.cast(self.attr_getter(item)) if self.cast is not None else self.attr_getter(item)
-        return bool(real_item == self.expected_value)
+        return real_item == self.expected_value
 
 
 class LazyIterator(typing.Generic[ValueT], abc.ABC):
@@ -769,7 +769,7 @@ class BufferedLazyIterator(typing.Generic[ValueT], LazyIterator[ValueT], abc.ABC
     __slots__: typing.Sequence[str] = ("_buffer",)
 
     def __init__(self) -> None:
-        self._buffer: typing.Optional[typing.Generator[ValueT, None, None]] = (_ for _ in ())
+        self._buffer: typing.Optional[typing.Generator[ValueT, None, None]] = iter(())
 
     @abc.abstractmethod
     async def _next_chunk(self) -> typing.Optional[typing.Generator[ValueT, None, None]]:

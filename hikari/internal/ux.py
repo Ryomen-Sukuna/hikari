@@ -214,7 +214,7 @@ def print_banner(
         for key in extra_args:
             if key in args:
                 raise ValueError(f"Cannot overwrite $-substitution `{key}`. Please use a different key.")
-        args.update(extra_args)
+        args |= extra_args
 
     if supports_color(allow_color, force_color):
         args.update(colorlog.escape_codes.escape_codes)
@@ -336,10 +336,11 @@ class HikariVersion:
         return self._compare(other, lambda s, o: s >= o)
 
     def _compare(self, other: typing.Any, method: typing.Callable[[CmpTuple, CmpTuple], bool]) -> bool:
-        if not isinstance(other, HikariVersion):
-            return NotImplemented
-
-        return method(self._cmp, other._cmp)
+        return (
+            method(self._cmp, other._cmp)
+            if isinstance(other, HikariVersion)
+            else NotImplemented
+        )
 
 
 async def check_for_updates(http_settings: config.HTTPSettings, proxy_settings: config.ProxySettings) -> None:

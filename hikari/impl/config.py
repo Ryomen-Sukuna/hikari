@@ -184,10 +184,7 @@ class ProxySettings(config.ProxySettings):
             be sent with any request.
         """
         if self.headers is None:
-            if self.auth is None:
-                return None
-            return {_PROXY_AUTHENTICATION_HEADER: self.auth}
-
+            return None if self.auth is None else {_PROXY_AUTHENTICATION_HEADER: self.auth}
         if self.auth is None:
             return self.headers
         return {**self.headers, _PROXY_AUTHENTICATION_HEADER: self.auth}

@@ -805,7 +805,13 @@ class RESTClientImpl(rest_api.RESTClient):
                     continue
 
                 # Attempt to re-auth on UNAUTHORIZED if we are using a TokenStrategy
-                can_re_auth = response.status == 401 and not (auth or no_auth or re_authed)
+                can_re_auth = (
+                    response.status == 401
+                    and not auth
+                    and not no_auth
+                    and not re_authed
+                )
+
                 if can_re_auth and isinstance(self._token, rest_api.TokenStrategy):
                     assert token is not None
                     self._token.invalidate(token)
@@ -1266,18 +1272,17 @@ class RESTClientImpl(rest_api.RESTClient):
             final_attachments.extend([files.ensure_resource(a) for a in attachments])
 
         serialized_components: undefined.UndefinedOr[typing.List[data_binding.JSONObject]] = undefined.UNDEFINED
-        if component is not undefined.UNDEFINED:
-            if component is not None:
-                serialized_components = [component.build()]
-            else:
-                serialized_components = []
+        if component is not undefined.UNDEFINED and component is not None:
+            serialized_components = [component.build()]
+        elif (
+            component is not undefined.UNDEFINED
+            or components is not undefined.UNDEFINED
+            and components is None
+        ):
+            serialized_components = []
 
         elif components is not undefined.UNDEFINED:
-            if components is not None:
-                serialized_components = [component.build() for component in components]
-            else:
-                serialized_components = []
-
+            serialized_components = [component.build() for component in components]
         serialized_embeds: undefined.UndefinedOr[data_binding.JSONArray] = undefined.UNDEFINED
         if embed is not undefined.UNDEFINED:
             if embed is not None:
